@@ -24,7 +24,8 @@
   *{box-sizing:border-box; margin:0; padding:0;}
   html{scroll-behavior:smooth; background:var(--ink);}
   body{background:transparent; color:var(--bone); font-family:var(--font-body); line-height:1.6; -webkit-font-smoothing:antialiased; position:relative;}
-  .scene{position:fixed; inset:0; z-index:0; pointer-events:none;}
+  .scene{position:fixed; inset:0; width:100vw; height:100vh; height:100dvh; z-index:0; pointer-events:none; display:block;}
+  .vignette{position:fixed; inset:0; width:100vw; height:100vh; height:100dvh; z-index:0; pointer-events:none; background:radial-gradient(ellipse at center, rgba(11,14,20,0) 35%, rgba(11,14,20,0.65) 100%);}
   .content{position:relative; z-index:1;}
   a{color:inherit;}
   .wrap{max-width:960px; margin:0 auto; padding:0 24px;}
@@ -60,12 +61,11 @@
 
   /* ---------- JOURNEY / WALKING SCROLL ---------- */
   .journey{position:relative; padding-bottom:20px;}
-  .journey-track{position:relative; height:420px;}
-  .journey-track svg{width:100%; height:100%; overflow:visible;}
+  .journey-track{position:relative; width:100%; aspect-ratio:900/300;}
+  .journey-track svg{width:100%; height:100%; display:block;}
   #journey-path{fill:none; stroke:var(--line); stroke-width:2;}
   .stop-dot{fill:var(--ink-2); stroke:var(--ash); stroke-width:1.5;}
   .stop-dot.passed{fill:var(--pulse); stroke:var(--pulse);}
-  #traveler{fill:var(--signal);}
   .stop-label{position:absolute; width:150px; font-family:var(--font-mono); font-size:11px; color:var(--ash); text-align:center; transform:translate(-50%, 0);}
   .stop-label .yr{color:var(--pulse); font-weight:500; display:block; margin-bottom:4px; font-size:12px;}
   .journey-detail{margin-top:28px; padding:20px; border:1px solid var(--line); border-radius:8px; background:var(--ink-2);}
@@ -114,22 +114,28 @@
     .proof-grid{grid-template-columns:1fr;}
     .ov-row{grid-template-columns:1fr; gap:4px;}
     footer .wrap{flex-direction:column; align-items:flex-start;}
-    .journey-track{height:520px;}
   }
 </style>
 </head>
 <body>
 
-<svg class="scene" aria-hidden="true">
+<svg class="scene" width="100%" height="100%" aria-hidden="true">
   <defs>
+    <linearGradient id="sky-gradient" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1B3A6B"/>
+      <stop offset="55%" stop-color="#101B33"/>
+      <stop offset="100%" stop-color="#0B0E14"/>
+    </linearGradient>
     <pattern id="pat-far" patternUnits="userSpaceOnUse" width="300" height="420"></pattern>
     <pattern id="pat-mid" patternUnits="userSpaceOnUse" width="300" height="420"></pattern>
     <pattern id="pat-near" patternUnits="userSpaceOnUse" width="300" height="420"></pattern>
   </defs>
+  <rect width="100%" height="100%" fill="url(#sky-gradient)"/>
   <rect width="100%" height="100%" fill="url(#pat-far)"/>
   <rect width="100%" height="100%" fill="url(#pat-mid)"/>
   <rect width="100%" height="100%" fill="url(#pat-near)"/>
 </svg>
+<div class="vignette" aria-hidden="true"></div>
 
 <div class="content">
 
@@ -178,16 +184,21 @@
 
   <div class="journey">
     <div class="journey-track">
-      <svg viewBox="0 0 900 260" preserveAspectRatio="none">
-        <path id="journey-path" d="M 20 60 C 150 60, 150 200, 280 200 S 410 60, 460 60 S 590 200, 720 200 S 850 60, 880 60"/>
-        <circle class="stop-dot" cx="20" cy="60" r="6"/>
-        <circle class="stop-dot" cx="150" cy="130" r="6"/>
-        <circle class="stop-dot" cx="280" cy="200" r="6"/>
-        <circle class="stop-dot" cx="460" cy="60" r="6"/>
-        <circle class="stop-dot" cx="590" cy="130" r="6"/>
-        <circle class="stop-dot" cx="720" cy="200" r="6"/>
-        <circle class="stop-dot" cx="880" cy="60" r="6"/>
-        <circle id="traveler" cx="20" cy="60" r="7"/>
+      <svg id="orbit-svg" viewBox="0 0 900 300" preserveAspectRatio="xMidYMid meet">
+        <defs>
+          <radialGradient id="sun-grad" cx="35%" cy="35%" r="65%">
+            <stop offset="0%" stop-color="#FFDFA6"/>
+            <stop offset="100%" stop-color="var(--pulse)"/>
+          </radialGradient>
+        </defs>
+        <path id="journey-path" d="M60,150 C220,280 380,280 450,150 S680,20 860,150"/>
+        <circle cx="60" cy="150" r="16" fill="url(#sun-grad)"/>
+        <g id="stop-dots"></g>
+        <g id="traveler-earth">
+          <circle r="8" fill="#3B6EF0"/>
+          <circle cx="-2" cy="-2" r="3.5" fill="#4CAF7D"/>
+          <circle cx="3" cy="2" r="2.5" fill="#4CAF7D"/>
+        </g>
       </svg>
     </div>
 
@@ -325,29 +336,18 @@
   var docHeight = function(){ return document.documentElement.scrollHeight - window.innerHeight; };
 
   var SCENES = {
-    street: {
-      far:  {fill:'var(--ash)',    opacity:0.16, shapes:'<rect x="10" y="260" width="40" height="160"/><rect x="60" y="200" width="30" height="220"/><rect x="100" y="300" width="50" height="120"/><rect x="160" y="180" width="35" height="240"/><rect x="205" y="250" width="45" height="170"/><rect x="260" y="220" width="30" height="200"/>'},
-      mid:  {fill:'var(--signal)', opacity:0.13, shapes:'<rect x="40" y="120" width="60" height="300"/><rect x="180" y="90" width="70" height="330"/><circle cx="10" cy="378" r="4"/><rect x="8" y="378" width="4" height="42"/>'},
-      near: {fill:'var(--paper)',  opacity:0.08, shapes:'<rect x="20" y="405" width="40" height="6"/><rect x="120" y="405" width="40" height="6"/><rect x="220" y="405" width="40" height="6"/>'}
-      },
-    jungle: {
-      far:  {fill:'var(--ash)',    opacity:0.17, shapes:'<ellipse cx="50" cy="60" rx="55" ry="35"/><ellipse cx="150" cy="40" rx="65" ry="40"/><ellipse cx="250" cy="65" rx="50" ry="32"/>'},
-      mid:  {fill:'var(--pulse)',  opacity:0.12, shapes:'<rect x="90" y="150" width="14" height="180" rx="4"/><ellipse cx="97" cy="140" rx="70" ry="55"/><rect x="220" y="200" width="12" height="150" rx="4"/><ellipse cx="226" cy="190" rx="55" ry="45"/>'},
-      near: {fill:'var(--paper)',  opacity:0.09, shapes:'<ellipse cx="40" cy="390" rx="35" ry="12" transform="rotate(-20 40 390)"/><ellipse cx="130" cy="405" rx="40" ry="14" transform="rotate(15 130 405)"/><ellipse cx="230" cy="395" rx="30" ry="11" transform="rotate(-10 230 395)"/>'}
-    },
     sky: {
-      far:  {fill:'var(--ash)',    opacity:0.15, shapes:'<ellipse cx="60" cy="80" rx="30" ry="14"/><ellipse cx="200" cy="150" rx="25" ry="12"/><ellipse cx="120" cy="280" rx="35" ry="16"/>'},
-      mid:  {fill:'var(--signal)', opacity:0.11, shapes:'<ellipse cx="70" cy="120" rx="45" ry="20"/><ellipse cx="100" cy="110" rx="35" ry="18"/><ellipse cx="220" cy="300" rx="50" ry="22"/><ellipse cx="250" cy="290" rx="30" ry="16"/>'},
-      near: {fill:'none',          opacity:0.14, shapes:'<path d="M30 200 q10 -10 20 0 q10 -10 20 0" stroke="var(--paper)" stroke-width="3" fill="none"/><path d="M180 340 q8 -8 16 0 q8 -8 16 0" stroke="var(--paper)" stroke-width="3" fill="none"/>'}
+      far:  {shapes:'<g fill="#EAF2FF" opacity="0.10"><ellipse cx="50" cy="85" rx="16" ry="10"/><ellipse cx="68" cy="80" rx="20" ry="13"/><ellipse cx="86" cy="86" rx="14" ry="9"/><ellipse cx="205" cy="255" rx="15" ry="9"/><ellipse cx="222" cy="250" rx="19" ry="12"/><ellipse cx="240" cy="256" rx="13" ry="8"/></g>'},
+      mid:  {shapes:'<g fill="#F4F8FF" opacity="0.17"><ellipse cx="70" cy="145" rx="26" ry="16"/><ellipse cx="98" cy="135" rx="34" ry="21"/><ellipse cx="128" cy="145" rx="24" ry="15"/><ellipse cx="215" cy="325" rx="28" ry="17"/><ellipse cx="245" cy="315" rx="36" ry="22"/><ellipse cx="278" cy="326" rx="22" ry="14"/></g>'},
+      near: {shapes:'<g fill="#FFFFFF" opacity="0.26"><ellipse cx="130" cy="80" rx="40" ry="24"/><ellipse cx="170" cy="66" rx="50" ry="30"/><ellipse cx="215" cy="82" rx="34" ry="20"/><ellipse cx="45" cy="330" rx="36" ry="21"/><ellipse cx="80" cy="316" rx="46" ry="27"/><ellipse cx="118" cy="332" rx="30" ry="18"/></g><g fill="#FFD9A0" opacity="0.10"><ellipse cx="180" cy="72" rx="48" ry="28"/><ellipse cx="90" cy="322" rx="44" ry="25"/></g>'}
     }
   };
-  var sceneNames = Object.keys(SCENES);
-  var chosenScene = sceneNames[Math.floor(Math.random() * sceneNames.length)];
+  var chosenScene = 'sky';
   var sceneSpeeds = {far:0.04, mid:0.12, near:0.25};
   ['far','mid','near'].forEach(function(layer){
     var cfg = SCENES[chosenScene][layer];
     var pattern = document.getElementById('pat-' + layer);
-    pattern.innerHTML = '<g fill="' + cfg.fill + '" opacity="' + cfg.opacity + '">' + cfg.shapes + '</g>';
+    pattern.innerHTML = cfg.shapes;
   });
 
   var globeInstance = Globe()
@@ -355,7 +355,7 @@
     .width(220)
     .height(220)
     .backgroundColor('rgba(0,0,0,0)')
-    .globeImageUrl('https://unpkg.com/three-globe/example/img/earth-dark.jpg')
+    .globeImageUrl('https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg')
     .showAtmosphere(true)
     .atmosphereColor('#3B6EF0')
     .atmosphereAltitude(0.15);
@@ -364,11 +364,36 @@
   globeInstance.controls().enableZoom = false;
 
   var lastScrollY = window.scrollY;
+  var driftT = 0;
+
+  function animateScene(){
+    driftT += 0.6;
+    var curScroll = window.scrollY;
+    ['far','mid','near'].forEach(function(layer){
+      var pattern = document.getElementById('pat-' + layer);
+      var offset = -((curScroll * sceneSpeeds[layer]) + (driftT * (sceneSpeeds[layer] + 0.03))) % 420;
+      pattern.setAttribute('patternTransform', 'translate(0,' + offset + ')');
+    });
+    requestAnimationFrame(animateScene);
+  }
+  requestAnimationFrame(animateScene);
 
   var path = document.getElementById('journey-path');
-  var traveler = document.getElementById('traveler');
+  var traveler = document.getElementById('traveler-earth');
   var pathLen = path.getTotalLength();
   var track = document.querySelector('.journey-track');
+  var stopFracs = [0, 0.16, 0.33, 0.5, 0.66, 0.83, 1];
+  var stopsGroup = document.getElementById('stop-dots');
+  stopFracs.forEach(function(f){
+    var pt = path.getPointAtLength(f * pathLen);
+    var c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    c.setAttribute('cx', pt.x);
+    c.setAttribute('cy', pt.y);
+    c.setAttribute('r', 6);
+    c.classList.add('stop-dot');
+    c.dataset.frac = f;
+    stopsGroup.appendChild(c);
+  });
   var dots = document.querySelectorAll('.stop-dot');
   var details = document.querySelectorAll('.journey-detail');
 
@@ -390,19 +415,11 @@
       trackFrac = Math.min(1, Math.max(0, trackFrac));
     }
     var pt = path.getPointAtLength(trackFrac * pathLen);
-    traveler.setAttribute('cx', pt.x);
-    traveler.setAttribute('cy', pt.y);
+    traveler.setAttribute('transform', 'translate(' + pt.x + ',' + pt.y + ')');
 
-    ['far','mid','near'].forEach(function(layer){
-      var pattern = document.getElementById('pat-' + layer);
-      var offset = -(scrollY * sceneSpeeds[layer]) % 420;
-      pattern.setAttribute('patternTransform', 'translate(0,' + offset + ')');
-    });
-
-    dots.forEach(function(dot, i){
-      var dx = parseFloat(dot.getAttribute('cx'));
-      var stopFrac = dx / 900;
-      dot.classList.toggle('passed', trackFrac >= stopFrac - 0.03);
+    dots.forEach(function(dot){
+      var f = parseFloat(dot.dataset.frac);
+      dot.classList.toggle('passed', trackFrac >= f - 0.03);
     });
   }
 
