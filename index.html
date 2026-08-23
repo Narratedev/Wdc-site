@@ -22,223 +22,237 @@
     --font-mono:'IBM Plex Mono', monospace;
   }
   *{box-sizing:border-box; margin:0; padding:0;}
-  html{scroll-behavior:smooth;}
-  body{
-    background:var(--ink);
-    color:var(--bone);
-    font-family:var(--font-body);
-    line-height:1.6;
-    -webkit-font-smoothing:antialiased;
-  }
+  html{scroll-behavior:smooth; background:var(--ink);}
+  body{background:transparent; color:var(--bone); font-family:var(--font-body); line-height:1.6; -webkit-font-smoothing:antialiased; position:relative;}
+  .scene{position:fixed; inset:0; z-index:0; pointer-events:none;}
+  .content{position:relative; z-index:1;}
   a{color:inherit;}
   .wrap{max-width:960px; margin:0 auto; padding:0 24px;}
 
-  /* ---------- NAV ---------- */
-  nav{
-    position:sticky; top:0; z-index:10;
-    background:rgba(11,14,20,0.85);
-    backdrop-filter:blur(8px);
-    border-bottom:1px solid var(--line);
-  }
-  nav .wrap{
-    display:flex; align-items:center; justify-content:space-between;
-    padding-top:16px; padding-bottom:16px;
-  }
-  .brand{display:flex; align-items:center; gap:10px; font-family:var(--font-display); font-weight:700; font-size:18px; letter-spacing:0.02em;}
-  .brand .mark{width:28px; height:28px; border-radius:50%; background:var(--signal); position:relative; flex-shrink:0;}
-  .brand .mark svg{position:absolute; inset:6px;}
+  .horizon{position:sticky; top:0; z-index:20; height:3px; width:100%; background:var(--signal); transition:background .4s linear;}
+
+  nav{position:sticky; top:3px; z-index:10; background:rgba(11,14,20,0.88); backdrop-filter:blur(8px); border-bottom:1px solid var(--line);}
+  nav .wrap{display:flex; align-items:center; justify-content:space-between; padding-top:16px; padding-bottom:16px;}
+  .brand{display:flex; align-items:center; gap:10px; font-family:var(--font-display); font-weight:700; font-size:18px;}
+  .brand .mark{width:28px; height:28px; border-radius:50%; border:1.5px solid var(--signal); position:relative; flex-shrink:0; overflow:hidden;}
+  .brand .mark svg{position:absolute; inset:0; transform-origin:center;}
   .navlinks{display:flex; gap:24px; font-size:14px; color:var(--ash);}
   .navlinks a{text-decoration:none; transition:color .2s;}
   .navlinks a:hover{color:var(--bone);}
-  .buy-btn{
-    background:var(--signal); color:var(--bone); font-family:var(--font-mono); font-size:13px;
-    padding:9px 16px; border-radius:6px; text-decoration:none; font-weight:500;
-    border:1px solid var(--signal); transition:opacity .2s;
-  }
-  .buy-btn:hover{opacity:0.85;}
+  .buy-btn{background:var(--signal); color:var(--bone); font-family:var(--font-mono); font-size:13px; padding:9px 16px; border-radius:6px; text-decoration:none; font-weight:500; border:1px solid var(--signal);}
 
   /* ---------- HERO ---------- */
-  .hero{padding:72px 0 48px; position:relative; overflow:hidden;}
-  .hero-pulse{width:100%; height:auto; display:block; opacity:0.9;}
-  .hero-pulse path{
-    fill:none; stroke:var(--signal); stroke-width:2;
-    stroke-dasharray:900; stroke-dashoffset:900;
-    animation:draw 2.4s ease-out forwards;
-  }
-  .hero-pulse .spike{stroke:var(--pulse);}
-  @keyframes draw{ to{stroke-dashoffset:0;} }
-  .eyebrow{
-    font-family:var(--font-mono); font-size:12px; letter-spacing:0.12em; text-transform:uppercase;
-    color:var(--pulse); margin:32px 0 16px; display:flex; align-items:center; gap:8px;
-  }
+  .hero{padding:64px 0 40px; position:relative; overflow:hidden;}
+  .globe-wrap{display:flex; justify-content:center; margin-bottom:8px; cursor:grab;}
+  .globe-wrap:active{cursor:grabbing;}
+  .eyebrow{font-family:var(--font-mono); font-size:12px; letter-spacing:0.12em; text-transform:uppercase; color:var(--pulse); margin:24px 0 16px; display:flex; align-items:center; justify-content:center; gap:8px; text-align:center;}
   .eyebrow::before{content:''; width:6px; height:6px; border-radius:50%; background:var(--pulse); display:inline-block;}
-  h1{
-    font-family:var(--font-display); font-weight:700;
-    font-size:clamp(32px, 6vw, 52px); line-height:1.08; letter-spacing:-0.01em;
-    max-width:720px;
-  }
+  h1{font-family:var(--font-display); font-weight:700; font-size:clamp(30px, 6vw, 48px); line-height:1.1; letter-spacing:-0.01em; text-align:center;}
   h1 .fade{color:var(--ash);}
-  .hero-sub{
-    font-size:17px; color:var(--ash); max-width:520px; margin-top:20px;
-  }
-  .hero-cta{display:flex; gap:12px; margin-top:32px; flex-wrap:wrap;}
-  .cta-primary{
-    background:var(--paper); color:var(--ink); font-family:var(--font-mono); font-size:14px; font-weight:500;
-    padding:13px 22px; border-radius:6px; text-decoration:none;
-  }
-  .cta-secondary{
-    border:1px solid var(--line); color:var(--bone); font-family:var(--font-mono); font-size:14px;
-    padding:13px 22px; border-radius:6px; text-decoration:none;
-  }
+  .hero-sub{font-size:16px; color:var(--ash); max-width:520px; margin:20px auto 0; text-align:center;}
+  .hero-cta{display:flex; gap:12px; margin-top:28px; justify-content:center; flex-wrap:wrap;}
+  .cta-primary{background:var(--paper); color:var(--ink); font-family:var(--font-mono); font-size:14px; font-weight:500; padding:13px 22px; border-radius:6px; text-decoration:none;}
+  .cta-secondary{border:1px solid var(--line); color:var(--bone); font-family:var(--font-mono); font-size:14px; padding:13px 22px; border-radius:6px; text-decoration:none;}
 
-  /* ---------- SECTION DIVIDER (pulse tick) ---------- */
-  .divider{display:flex; align-items:center; gap:10px; margin:64px 0 28px; color:var(--ash); font-family:var(--font-mono); font-size:12px; letter-spacing:0.1em; text-transform:uppercase;}
-  .divider::after{content:''; flex:1; height:1px; background:var(--line); position:relative;}
-  .divider svg{flex-shrink:0;}
+  .divider{display:flex; align-items:center; gap:10px; margin:64px 0 12px; color:var(--ash); font-family:var(--font-mono); font-size:12px; letter-spacing:0.1em; text-transform:uppercase;}
+  .divider::after{content:''; flex:1; height:1px; background:var(--line);}
+  .divider-sub{font-size:14px; color:var(--ash); margin-bottom:32px; max-width:520px;}
+
+  /* ---------- JOURNEY / WALKING SCROLL ---------- */
+  .journey{position:relative; padding-bottom:20px;}
+  .journey-track{position:relative; height:420px;}
+  .journey-track svg{width:100%; height:100%; overflow:visible;}
+  #journey-path{fill:none; stroke:var(--line); stroke-width:2;}
+  .stop-dot{fill:var(--ink-2); stroke:var(--ash); stroke-width:1.5;}
+  .stop-dot.passed{fill:var(--pulse); stroke:var(--pulse);}
+  #traveler{fill:var(--signal);}
+  .stop-label{position:absolute; width:150px; font-family:var(--font-mono); font-size:11px; color:var(--ash); text-align:center; transform:translate(-50%, 0);}
+  .stop-label .yr{color:var(--pulse); font-weight:500; display:block; margin-bottom:4px; font-size:12px;}
+  .journey-detail{margin-top:28px; padding:20px; border:1px solid var(--line); border-radius:8px; background:var(--ink-2);}
+  .journey-detail .yr-big{font-family:var(--font-mono); color:var(--pulse); font-size:13px; margin-bottom:8px; display:block;}
+  .journey-detail p{font-size:14px; color:var(--bone); max-width:600px;}
+  .journey-detail p + p{margin-top:10px;}
 
   /* ---------- PROOF STRIP ---------- */
   .proof-grid{display:grid; grid-template-columns:repeat(3, 1fr); gap:1px; background:var(--line); border:1px solid var(--line); border-radius:8px; overflow:hidden;}
-  .proof-cell{background:var(--ink-2); padding:22px 18px;}
-  .proof-label{font-family:var(--font-mono); font-size:11px; color:var(--ash); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:8px;}
-  .proof-value{font-family:var(--font-mono); font-size:22px; color:var(--bone); font-weight:500;}
+  .proof-cell{background:var(--ink-2); padding:16px 14px;}
+  .proof-label{font-family:var(--font-mono); font-size:10px; color:var(--ash); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:8px;}
+  .proof-value{font-family:var(--font-mono); font-size:19px; color:var(--bone); font-weight:500;}
   .proof-value.status-live{color:var(--pulse);}
 
-  /* ---------- HISTORY LOG ---------- */
-  .log{border:1px solid var(--line); border-radius:8px; overflow:hidden;}
-  .log-row{
-    display:grid; grid-template-columns:96px 1fr; gap:16px;
-    padding:18px 20px; border-bottom:1px solid var(--line);
-  }
-  .log-row:last-child{border-bottom:none;}
-  .log-row.current{background:rgba(232,163,61,0.06);}
-  .log-time{font-family:var(--font-mono); font-size:13px; color:var(--pulse);}
-  .log-row:not(.current) .log-time{color:var(--ash);}
-  .log-text{font-size:14px; color:var(--bone);}
-  .log-text .muted{color:var(--ash);}
+  /* ---------- TOKEN OVERVIEW ---------- */
+  .overview-table{border:1px solid var(--line); border-radius:8px; overflow:hidden;}
+  .ov-row{display:grid; grid-template-columns:140px 1fr; gap:12px; padding:14px 18px; border-bottom:1px solid var(--line); font-size:14px;}
+  .ov-row:last-child{border-bottom:none;}
+  .ov-key{color:var(--ash); font-family:var(--font-mono); font-size:12px;}
+  .ov-val{color:var(--bone);}
+  .ov-note{font-size:12px; color:var(--ash); margin-top:12px; max-width:600px;}
+
+  .contract-box{display:flex; align-items:center; justify-content:space-between; gap:12px; border:1px solid var(--border-pulse, var(--line)); border-radius:8px; padding:14px 18px; font-family:var(--font-mono); font-size:13px; color:var(--ash); flex-wrap:wrap; margin-top:16px;}
+  .contract-box.needs-ca{border-color:var(--pulse);}
+  .contract-box .addr{color:var(--bone); word-break:break-all;}
+  .contract-box .addr.placeholder{color:var(--pulse);}
+  .copy-btn{background:transparent; border:1px solid var(--line); color:var(--bone); font-family:var(--font-mono); font-size:12px; padding:7px 12px; border-radius:6px; cursor:pointer; flex-shrink:0;}
+  .copy-btn:hover{border-color:var(--signal);}
 
   /* ---------- MESSAGE ---------- */
-  .message{
-    border-left:2px solid var(--signal); padding-left:20px; margin:8px 0;
-  }
+  .message{border-left:2px solid var(--signal); padding-left:20px; margin:8px 0;}
   .message p{font-size:15px; color:var(--bone); margin-bottom:14px; max-width:640px;}
   .message .sign{font-family:var(--font-mono); font-size:13px; color:var(--ash); margin-top:20px;}
 
-  /* ---------- CONTRACT ---------- */
-  .contract-box{
-    display:flex; align-items:center; justify-content:space-between; gap:12px;
-    border:1px solid var(--line); border-radius:8px; padding:14px 18px;
-    font-family:var(--font-mono); font-size:13px; color:var(--ash); flex-wrap:wrap;
-  }
-  .contract-box .addr{color:var(--bone); word-break:break-all;}
-  .copy-btn{
-    background:transparent; border:1px solid var(--line); color:var(--bone);
-    font-family:var(--font-mono); font-size:12px; padding:7px 12px; border-radius:6px;
-    cursor:pointer; flex-shrink:0; transition:border-color .2s;
-  }
-  .copy-btn:hover{border-color:var(--signal);}
-
-  /* ---------- FOOTER ---------- */
   footer{border-top:1px solid var(--line); margin-top:80px; padding:32px 0 48px;}
   footer .wrap{display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;}
   .foot-links{display:flex; gap:20px; font-family:var(--font-mono); font-size:13px; color:var(--ash);}
-  .foot-links a{text-decoration:none; transition:color .2s;}
+  .foot-links a{text-decoration:none;}
   .foot-links a:hover{color:var(--bone);}
   .foot-note{font-size:12px; color:var(--ash); font-family:var(--font-mono);}
 
-  @media (max-width:640px){
-    .proof-grid{grid-template-columns:1fr;}
-    .log-row{grid-template-columns:1fr; gap:4px;}
-    footer .wrap{flex-direction:column; align-items:flex-start;}
-  }
-
   .reveal{opacity:0; transform:translateY(12px); transition:opacity .6s ease, transform .6s ease;}
   .reveal.in{opacity:1; transform:translateY(0);}
+
+  @media (max-width:640px){
+    .proof-grid{grid-template-columns:1fr;}
+    .ov-row{grid-template-columns:1fr; gap:4px;}
+    footer .wrap{flex-direction:column; align-items:flex-start;}
+    .journey-track{height:520px;}
+  }
 </style>
 </head>
 <body>
+
+<svg class="scene" aria-hidden="true">
+  <defs>
+    <pattern id="pat-far" patternUnits="userSpaceOnUse" width="300" height="420"></pattern>
+    <pattern id="pat-mid" patternUnits="userSpaceOnUse" width="300" height="420"></pattern>
+    <pattern id="pat-near" patternUnits="userSpaceOnUse" width="300" height="420"></pattern>
+  </defs>
+  <rect width="100%" height="100%" fill="url(#pat-far)"/>
+  <rect width="100%" height="100%" fill="url(#pat-mid)"/>
+  <rect width="100%" height="100%" fill="url(#pat-near)"/>
+</svg>
+
+<div class="content">
+
+<div class="horizon" id="horizon"></div>
 
 <nav>
   <div class="wrap">
     <div class="brand">
       <span class="mark">
-        <svg viewBox="0 0 16 16" width="16" height="16"><path d="M1 13 L4 7 L7 10 L15 2" stroke="#0B0E14" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <svg id="nav-globe" viewBox="0 0 28 28" width="28" height="28">
+          <circle cx="14" cy="14" r="12" fill="none" stroke="var(--signal)" stroke-width="1"/>
+          <ellipse cx="14" cy="14" rx="5" ry="12" fill="none" stroke="var(--signal)" stroke-width="1"/>
+          <line x1="2" y1="14" x2="26" y2="14" stroke="var(--signal)" stroke-width="1"/>
+        </svg>
       </span>
       $WDC
     </div>
     <div class="navlinks">
-      <a href="#proof">Proof</a>
-      <a href="#history">History</a>
+      <a href="#journey">Origin</a>
+      <a href="#overview">Token</a>
       <a href="#note">Note</a>
     </div>
-    <a class="buy-btn" href="#" id="buy-link">Buy on pump.fun</a>
+    <a class="buy-btn" href="https://join.pump.fun/HSag/etnm5725" target="_blank" id="buy-link">Buy</a>
   </div>
 </nav>
 
 <section class="hero">
   <div class="wrap">
-    <svg class="hero-pulse" viewBox="0 0 900 90" preserveAspectRatio="none">
-      <path d="M0,45 L280,45 L300,45 L315,20 L330,70 L345,45 L360,45 L380,45 L400,45 L420,10 L440,80 L460,45 L480,45 L900,45" class="spike"/>
-    </svg>
-    <div class="eyebrow">Live on Solana</div>
-    <h1>Declared dead in 2018.<br><span class="fade">Still trading in 2026.</span></h1>
-    <p class="hero-sub">$WDC is a 2013 coin nobody expected to come back. This page exists to show exactly where things stand — no roadmap theater, just what's real right now.</p>
+    <div class="globe-wrap">
+      <div id="globeViz" style="width:220px;height:220px;"></div>
+    </div>
+    <div class="eyebrow">One coin, two decades apart</div>
+    <h1>You're not scrolling a page.<br><span class="fade">You're walking across 13 years.</span></h1>
+    <p class="hero-sub">$WDC started in 2013, went quiet for most of a decade, and came back on Solana. Scroll down to follow the actual timeline — no spin, just what happened and what's real right now.</p>
     <div class="hero-cta">
-      <a class="cta-primary" href="#" id="buy-link-2">Buy $WDC</a>
-      <a class="cta-secondary" href="#proof">See the proof</a>
+      <a class="cta-primary" href="https://join.pump.fun/HSag/etnm5725" target="_blank" id="buy-link-2">Buy $WDC</a>
+      <a class="cta-secondary" href="#journey">Start the walk</a>
     </div>
   </div>
 </section>
 
 <div class="wrap">
 
-  <div class="divider" id="proof">Proof, not promises</div>
-  <div class="proof-grid reveal">
-    <div class="proof-cell">
-      <div class="proof-label">Liquidity</div>
-      <div class="proof-value">$6,000</div>
+  <div class="divider" id="journey">The walk</div>
+  <p class="divider-sub reveal">The original World Coin (WDC) is a real, independently verifiable project — not something made up for this revival. Here's its actual path, scroll to follow it.</p>
+
+  <div class="journey">
+    <div class="journey-track">
+      <svg viewBox="0 0 900 260" preserveAspectRatio="none">
+        <path id="journey-path" d="M 20 60 C 150 60, 150 200, 280 200 S 410 60, 460 60 S 590 200, 720 200 S 850 60, 880 60"/>
+        <circle class="stop-dot" cx="20" cy="60" r="6"/>
+        <circle class="stop-dot" cx="150" cy="130" r="6"/>
+        <circle class="stop-dot" cx="280" cy="200" r="6"/>
+        <circle class="stop-dot" cx="460" cy="60" r="6"/>
+        <circle class="stop-dot" cx="590" cy="130" r="6"/>
+        <circle class="stop-dot" cx="720" cy="200" r="6"/>
+        <circle class="stop-dot" cx="880" cy="60" r="6"/>
+        <circle id="traveler" cx="20" cy="60" r="7"/>
+      </svg>
     </div>
-    <div class="proof-cell">
-      <div class="proof-label">Market cap</div>
-      <div class="proof-value">$7,000</div>
+
+    <div class="journey-detail reveal" data-stop="0">
+      <span class="yr-big">May 2013</span>
+      <p>World Coin launches as a Scrypt-based chain, built in the same lineage as Litecoin, with block times fast enough for everyday spending rather than pure speculation.</p>
     </div>
-    <div class="proof-cell">
-      <div class="proof-label">Status</div>
-      <div class="proof-value status-live">Active</div>
+    <div class="journey-detail reveal" data-stop="1" style="margin-top:16px;">
+      <span class="yr-big">December 2013</span>
+      <p>WDC hits its all-time high, trading close to $0.90 during that year's altcoin run. That peak is real and independently recorded, not a claim invented for this revival.</p>
+    </div>
+    <div class="journey-detail reveal" data-stop="2" style="margin-top:16px;">
+      <span class="yr-big">2014 – 2020</span>
+      <p>Volume thins out, but the chain doesn't disappear. At least one real network upgrade lands in this window — a move to AuxPoW merged mining with an updated difficulty algorithm — kept alive by a small remaining community.</p>
+    </div>
+    <div class="journey-detail reveal" data-stop="3" style="margin-top:16px;">
+      <span class="yr-big">2023</span>
+      <p>Sam Altman's identity-verification project launches under the strikingly similar name Worldcoin, ticker WLD. It's unrelated to the 2013 coin, but its funding and reach pull nearly all public attention to the new name.</p>
+    </div>
+    <div class="journey-detail reveal" data-stop="4" style="margin-top:16px;">
+      <span class="yr-big">2023 – 2024</span>
+      <p>The original WDC chain goes largely dormant in the shadow of WLD's launch. Still technically alive on-chain, but trading activity drops close to zero.</p>
+    </div>
+    <div class="journey-detail reveal" data-stop="5" style="margin-top:16px;">
+      <span class="yr-big">2025</span>
+      <p>$WDC is revived as a new token on Solana via pump.fun, carrying the original name and story forward into a new chain and a new community.</p>
+    </div>
+    <div class="journey-detail reveal" data-stop="6" style="margin-top:16px; border-color:var(--pulse);">
+      <span class="yr-big">Now</span>
+      <p>Small, real, and rebuilding in public. This page updates as things change — that's the point of it.</p>
     </div>
   </div>
 
-  <div class="divider" id="history">Timeline</div>
-  <div class="log reveal">
-    <div class="log-row">
-      <div class="log-time">2013</div>
-      <div class="log-text">World Coin launches. <span class="muted">Original project, pre-memecoin era.</span></div>
-    </div>
-    <div class="log-row">
-      <div class="log-time">2018</div>
-      <div class="log-text">Project goes dormant. <span class="muted">Effectively dead for years.</span></div>
-    </div>
-    <div class="log-row">
-      <div class="log-time">2025</div>
-      <div class="log-text">Revived on pump.fun. <span class="muted">Community forms around the name-revival angle.</span></div>
-    </div>
-    <div class="log-row current">
-      <div class="log-time">Now</div>
-      <div class="log-text">Rebuilding in the open. <span class="muted">This site, consistent updates, no more silence.</span></div>
-    </div>
+  <div class="divider" id="overview">Token overview</div>
+  <div class="overview-table reveal">
+    <div class="ov-row"><div class="ov-key">Name</div><div class="ov-val">World Coin ($WDC)</div></div>
+    <div class="ov-row"><div class="ov-key">Chain</div><div class="ov-val">Solana</div></div>
+    <div class="ov-row"><div class="ov-key">Supply</div><div class="ov-val">1,000,000,000 $WDC</div></div>
+    <div class="ov-row"><div class="ov-key">Launched via</div><div class="ov-val">pump.fun, 2025</div></div>
+    <div class="ov-row"><div class="ov-key">Relation to 2013 WDC</div><div class="ov-val">Name and story revival only — a new SPL token, not a bridge or migration of the original chain</div></div>
   </div>
+  <p class="ov-note reveal">Being upfront about that last line matters: this isn't the original 2013 coin moved onto Solana. It's a fresh token that picked up its name and history. Anyone telling you otherwise is misrepresenting it.</p>
+
+  <div class="contract-box reveal">
+    <span class="addr" id="contract-addr">7pZbygKjTfMy1gdUKCZCuMQsR1ptA5ti5Zastnm7pump</span>
+    <button class="copy-btn" id="copy-btn">Copy</button>
+  </div>
+
+  <div class="divider" id="proof">Where things stand<span style="margin-left:8px; font-size:10px; color:var(--ash); text-transform:none; letter-spacing:0;" id="live-tag">live</span></div>
+  <div class="proof-grid reveal">
+    <div class="proof-cell"><div class="proof-label">Price</div><div class="proof-value" id="stat-price">—</div></div>
+    <div class="proof-cell"><div class="proof-label">Market cap</div><div class="proof-value" id="stat-mc">—</div></div>
+    <div class="proof-cell"><div class="proof-label">24h Volume</div><div class="proof-value" id="stat-vol">—</div></div>
+    <div class="proof-cell"><div class="proof-label">Liquidity</div><div class="proof-value" id="stat-liq">—</div></div>
+    <div class="proof-cell"><div class="proof-label">Holders</div><div class="proof-value" id="stat-holders">~200</div></div>
+    <div class="proof-cell"><div class="proof-label">Status</div><div class="proof-value status-live">Active</div></div>
+  </div>
+  <p class="ov-note reveal">Price, market cap, volume, and liquidity pull live from DexScreener on every page load. Holders is set manually — update the number in the code when it changes meaningfully.</p>
 
   <div class="divider" id="note">A note, not a pitch</div>
   <div class="message reveal">
     <p>Some of you left before the price ever moved — and that's fair. Things were said and not followed through on, and I went quiet for stretches when I should've been showing up. That's on me.</p>
-    <p>I'm not here to relaunch with a new promise. This site is meant to be the plainest version of where WDC actually stands — the real liquidity number, the real timeline, updated as things change, not when it's convenient.</p>
+    <p>This page exists to be the plainest version of where WDC actually stands — the real history, the real numbers, updated as things change, not when it's convenient.</p>
     <p>If you're still around, I'd rather earn it back slowly than oversell it once.</p>
     <div class="sign">— the dev</div>
-  </div>
-
-  <div class="divider">Contract</div>
-  <div class="contract-box reveal">
-    <span class="addr" id="contract-addr">PASTE_CONTRACT_ADDRESS_HERE</span>
-    <button class="copy-btn" id="copy-btn">Copy</button>
   </div>
 
 </div>
@@ -247,26 +261,27 @@
   <div class="wrap">
     <div class="brand" style="font-size:15px;">
       <span class="mark" style="width:20px;height:20px;">
-        <svg viewBox="0 0 16 16" width="12" height="12"><path d="M1 13 L4 7 L7 10 L15 2" stroke="#0B0E14" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <svg viewBox="0 0 28 28" width="20" height="20"><circle cx="14" cy="14" r="12" fill="none" stroke="var(--signal)" stroke-width="1"/></svg>
       </span>
       $WDC
     </div>
     <div class="foot-links">
-      <a href="#" id="x-link">X</a>
-      <a href="#" id="community-link">Community</a>
-      <a href="#" id="chart-link">Chart</a>
+      <a href="https://x.com/Real_Worldcoin" target="_blank" id="x-link">X</a>
+      <a href="https://t.me/Worldtradebotl" target="_blank" id="community-link">Community</a>
+      <a href="https://dexscreener.com/solana/7pZbygKjTfMy1gdUKCZCuMQsR1ptA5ti5Zastnm7pump" target="_blank" id="chart-link">Chart</a>
     </div>
     <div class="foot-note">Not financial advice.</div>
   </div>
 </footer>
 
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/globe.gl"></script>
 <script>
   document.querySelectorAll('.reveal').forEach(function(el){
     var obs = new IntersectionObserver(function(entries){
-      entries.forEach(function(entry){
-        if(entry.isIntersecting){ entry.target.classList.add('in'); }
-      });
-    }, {threshold:0.15});
+      entries.forEach(function(entry){ if(entry.isIntersecting){ entry.target.classList.add('in'); } });
+    }, {threshold:0.12});
     obs.observe(el);
   });
 
@@ -278,7 +293,122 @@
       setTimeout(function(){ copyBtn.textContent = 'Copy'; }, 1500);
     });
   });
+
+  var WDC_CA = '7pZbygKjTfMy1gdUKCZCuMQsR1ptA5ti5Zastnm7pump';
+  fetch('https://api.dexscreener.com/latest/dex/tokens/' + WDC_CA)
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+      var pairs = data && data.pairs;
+      if(!pairs || !pairs.length){ throw new Error('no pairs'); }
+      pairs.sort(function(a,b){ return (b.liquidity?.usd || 0) - (a.liquidity?.usd || 0); });
+      var p = pairs[0];
+      var fmtUsd = function(n){
+        if(n == null) return '—';
+        if(n >= 1000000) return '$' + (n/1000000).toFixed(2) + 'M';
+        if(n >= 1000) return '$' + (n/1000).toFixed(1) + 'K';
+        return '$' + n.toFixed(2);
+      };
+      document.getElementById('stat-price').textContent = p.priceUsd ? '$' + parseFloat(p.priceUsd).toFixed(8) : '—';
+      document.getElementById('stat-mc').textContent = fmtUsd(p.fdv || p.marketCap);
+      document.getElementById('stat-vol').textContent = fmtUsd(p.volume ? p.volume.h24 : null);
+      document.getElementById('stat-liq').textContent = fmtUsd(p.liquidity ? p.liquidity.usd : null);
+    })
+    .catch(function(){
+      var tag = document.getElementById('live-tag');
+      if(tag) tag.textContent = 'unavailable — check dexscreener';
+      ['stat-price','stat-mc','stat-vol','stat-liq'].forEach(function(id){
+        document.getElementById(id).textContent = 'n/a';
+      });
+    });
+
+  var horizon = document.getElementById('horizon');
+  var docHeight = function(){ return document.documentElement.scrollHeight - window.innerHeight; };
+
+  var SCENES = {
+    street: {
+      far:  {fill:'var(--ash)',    opacity:0.16, shapes:'<rect x="10" y="260" width="40" height="160"/><rect x="60" y="200" width="30" height="220"/><rect x="100" y="300" width="50" height="120"/><rect x="160" y="180" width="35" height="240"/><rect x="205" y="250" width="45" height="170"/><rect x="260" y="220" width="30" height="200"/>'},
+      mid:  {fill:'var(--signal)', opacity:0.13, shapes:'<rect x="40" y="120" width="60" height="300"/><rect x="180" y="90" width="70" height="330"/><circle cx="10" cy="378" r="4"/><rect x="8" y="378" width="4" height="42"/>'},
+      near: {fill:'var(--paper)',  opacity:0.08, shapes:'<rect x="20" y="405" width="40" height="6"/><rect x="120" y="405" width="40" height="6"/><rect x="220" y="405" width="40" height="6"/>'}
+      },
+    jungle: {
+      far:  {fill:'var(--ash)',    opacity:0.17, shapes:'<ellipse cx="50" cy="60" rx="55" ry="35"/><ellipse cx="150" cy="40" rx="65" ry="40"/><ellipse cx="250" cy="65" rx="50" ry="32"/>'},
+      mid:  {fill:'var(--pulse)',  opacity:0.12, shapes:'<rect x="90" y="150" width="14" height="180" rx="4"/><ellipse cx="97" cy="140" rx="70" ry="55"/><rect x="220" y="200" width="12" height="150" rx="4"/><ellipse cx="226" cy="190" rx="55" ry="45"/>'},
+      near: {fill:'var(--paper)',  opacity:0.09, shapes:'<ellipse cx="40" cy="390" rx="35" ry="12" transform="rotate(-20 40 390)"/><ellipse cx="130" cy="405" rx="40" ry="14" transform="rotate(15 130 405)"/><ellipse cx="230" cy="395" rx="30" ry="11" transform="rotate(-10 230 395)"/>'}
+    },
+    sky: {
+      far:  {fill:'var(--ash)',    opacity:0.15, shapes:'<ellipse cx="60" cy="80" rx="30" ry="14"/><ellipse cx="200" cy="150" rx="25" ry="12"/><ellipse cx="120" cy="280" rx="35" ry="16"/>'},
+      mid:  {fill:'var(--signal)', opacity:0.11, shapes:'<ellipse cx="70" cy="120" rx="45" ry="20"/><ellipse cx="100" cy="110" rx="35" ry="18"/><ellipse cx="220" cy="300" rx="50" ry="22"/><ellipse cx="250" cy="290" rx="30" ry="16"/>'},
+      near: {fill:'none',          opacity:0.14, shapes:'<path d="M30 200 q10 -10 20 0 q10 -10 20 0" stroke="var(--paper)" stroke-width="3" fill="none"/><path d="M180 340 q8 -8 16 0 q8 -8 16 0" stroke="var(--paper)" stroke-width="3" fill="none"/>'}
+    }
+  };
+  var sceneNames = Object.keys(SCENES);
+  var chosenScene = sceneNames[Math.floor(Math.random() * sceneNames.length)];
+  var sceneSpeeds = {far:0.04, mid:0.12, near:0.25};
+  ['far','mid','near'].forEach(function(layer){
+    var cfg = SCENES[chosenScene][layer];
+    var pattern = document.getElementById('pat-' + layer);
+    pattern.innerHTML = '<g fill="' + cfg.fill + '" opacity="' + cfg.opacity + '">' + cfg.shapes + '</g>';
+  });
+
+  var globeInstance = Globe()
+    (document.getElementById('globeViz'))
+    .width(220)
+    .height(220)
+    .backgroundColor('rgba(0,0,0,0)')
+    .globeImageUrl('https://unpkg.com/three-globe/example/img/earth-dark.jpg')
+    .showAtmosphere(true)
+    .atmosphereColor('#3B6EF0')
+    .atmosphereAltitude(0.15);
+  globeInstance.controls().autoRotate = true;
+  globeInstance.controls().autoRotateSpeed = 0.6;
+  globeInstance.controls().enableZoom = false;
+
+  var lastScrollY = window.scrollY;
+
+  var path = document.getElementById('journey-path');
+  var traveler = document.getElementById('traveler');
+  var pathLen = path.getTotalLength();
+  var track = document.querySelector('.journey-track');
+  var dots = document.querySelectorAll('.stop-dot');
+  var details = document.querySelectorAll('.journey-detail');
+
+  function onScroll(){
+    var scrollY = window.scrollY;
+    var delta = scrollY - lastScrollY;
+    lastScrollY = scrollY;
+    globeInstance.controls().autoRotateSpeed = 0.6 + Math.min(5, Math.abs(delta) * 0.06);
+
+    var frac = Math.min(1, Math.max(0, scrollY / docHeight()));
+    var hue = frac < 0.5 ? (220 - frac * 2 * 60) : (160 + (frac - 0.5) * 2 * 60);
+    horizon.style.background = 'hsl(' + hue + ', 70%, 55%)';
+
+    var rect = track.getBoundingClientRect();
+    var trackScrollable = rect.height - window.innerHeight * 0.4;
+    var trackFrac = 0;
+    if(rect.top < window.innerHeight * 0.6){
+      trackFrac = (window.innerHeight * 0.6 - rect.top) / Math.max(1, trackScrollable);
+      trackFrac = Math.min(1, Math.max(0, trackFrac));
+    }
+    var pt = path.getPointAtLength(trackFrac * pathLen);
+    traveler.setAttribute('cx', pt.x);
+    traveler.setAttribute('cy', pt.y);
+
+    ['far','mid','near'].forEach(function(layer){
+      var pattern = document.getElementById('pat-' + layer);
+      var offset = -(scrollY * sceneSpeeds[layer]) % 420;
+      pattern.setAttribute('patternTransform', 'translate(0,' + offset + ')');
+    });
+
+    dots.forEach(function(dot, i){
+      var dx = parseFloat(dot.getAttribute('cx'));
+      var stopFrac = dx / 900;
+      dot.classList.toggle('passed', trackFrac >= stopFrac - 0.03);
+    });
+  }
+
+  window.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
 </script>
 
 </body>
-  </html>
+</html>
