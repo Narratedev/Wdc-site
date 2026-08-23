@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>$WDC — World Coin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0B0E14;
+    --ink-2:#10141D;
+    --paper:#EDE6D6;
+    --signal:#3B6EF0;
+    --pulse:#E8A33D;
+    --ash:#8A8F9C;
+    --bone:#F5F3EE;
+    --line: rgba(245,243,238,0.09);
+    --font-display:'Space Grotesk', sans-serif;
+    --font-body:'IBM Plex Sans', sans-serif;
+    --font-mono:'IBM Plex Mono', monospace;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--ink);
+    color:var(--bone);
+    font-family:var(--font-body);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit;}
+  .wrap{max-width:960px; margin:0 auto; padding:0 24px;}
+
+  /* ---------- NAV ---------- */
+  nav{
+    position:sticky; top:0; z-index:10;
+    background:rgba(11,14,20,0.85);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+  }
+  nav .wrap{
+    display:flex; align-items:center; justify-content:space-between;
+    padding-top:16px; padding-bottom:16px;
+  }
+  .brand{display:flex; align-items:center; gap:10px; font-family:var(--font-display); font-weight:700; font-size:18px; letter-spacing:0.02em;}
+  .brand .mark{width:28px; height:28px; border-radius:50%; background:var(--signal); position:relative; flex-shrink:0;}
+  .brand .mark svg{position:absolute; inset:6px;}
+  .navlinks{display:flex; gap:24px; font-size:14px; color:var(--ash);}
+  .navlinks a{text-decoration:none; transition:color .2s;}
+  .navlinks a:hover{color:var(--bone);}
+  .buy-btn{
+    background:var(--signal); color:var(--bone); font-family:var(--font-mono); font-size:13px;
+    padding:9px 16px; border-radius:6px; text-decoration:none; font-weight:500;
+    border:1px solid var(--signal); transition:opacity .2s;
+  }
+  .buy-btn:hover{opacity:0.85;}
+
+  /* ---------- HERO ---------- */
+  .hero{padding:72px 0 48px; position:relative; overflow:hidden;}
+  .hero-pulse{width:100%; height:auto; display:block; opacity:0.9;}
+  .hero-pulse path{
+    fill:none; stroke:var(--signal); stroke-width:2;
+    stroke-dasharray:900; stroke-dashoffset:900;
+    animation:draw 2.4s ease-out forwards;
+  }
+  .hero-pulse .spike{stroke:var(--pulse);}
+  @keyframes draw{ to{stroke-dashoffset:0;} }
+  .eyebrow{
+    font-family:var(--font-mono); font-size:12px; letter-spacing:0.12em; text-transform:uppercase;
+    color:var(--pulse); margin:32px 0 16px; display:flex; align-items:center; gap:8px;
+  }
+  .eyebrow::before{content:''; width:6px; height:6px; border-radius:50%; background:var(--pulse); display:inline-block;}
+  h1{
+    font-family:var(--font-display); font-weight:700;
+    font-size:clamp(32px, 6vw, 52px); line-height:1.08; letter-spacing:-0.01em;
+    max-width:720px;
+  }
+  h1 .fade{color:var(--ash);}
+  .hero-sub{
+    font-size:17px; color:var(--ash); max-width:520px; margin-top:20px;
+  }
+  .hero-cta{display:flex; gap:12px; margin-top:32px; flex-wrap:wrap;}
+  .cta-primary{
+    background:var(--paper); color:var(--ink); font-family:var(--font-mono); font-size:14px; font-weight:500;
+    padding:13px 22px; border-radius:6px; text-decoration:none;
+  }
+  .cta-secondary{
+    border:1px solid var(--line); color:var(--bone); font-family:var(--font-mono); font-size:14px;
+    padding:13px 22px; border-radius:6px; text-decoration:none;
+  }
+
+  /* ---------- SECTION DIVIDER (pulse tick) ---------- */
+  .divider{display:flex; align-items:center; gap:10px; margin:64px 0 28px; color:var(--ash); font-family:var(--font-mono); font-size:12px; letter-spacing:0.1em; text-transform:uppercase;}
+  .divider::after{content:''; flex:1; height:1px; background:var(--line); position:relative;}
+  .divider svg{flex-shrink:0;}
+
+  /* ---------- PROOF STRIP ---------- */
+  .proof-grid{display:grid; grid-template-columns:repeat(3, 1fr); gap:1px; background:var(--line); border:1px solid var(--line); border-radius:8px; overflow:hidden;}
+  .proof-cell{background:var(--ink-2); padding:22px 18px;}
+  .proof-label{font-family:var(--font-mono); font-size:11px; color:var(--ash); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:8px;}
+  .proof-value{font-family:var(--font-mono); font-size:22px; color:var(--bone); font-weight:500;}
+  .proof-value.status-live{color:var(--pulse);}
+
+  /* ---------- HISTORY LOG ---------- */
+  .log{border:1px solid var(--line); border-radius:8px; overflow:hidden;}
+  .log-row{
+    display:grid; grid-template-columns:96px 1fr; gap:16px;
+    padding:18px 20px; border-bottom:1px solid var(--line);
+  }
+  .log-row:last-child{border-bottom:none;}
+  .log-row.current{background:rgba(232,163,61,0.06);}
+  .log-time{font-family:var(--font-mono); font-size:13px; color:var(--pulse);}
+  .log-row:not(.current) .log-time{color:var(--ash);}
+  .log-text{font-size:14px; color:var(--bone);}
+  .log-text .muted{color:var(--ash);}
+
+  /* ---------- MESSAGE ---------- */
+  .message{
+    border-left:2px solid var(--signal); padding-left:20px; margin:8px 0;
+  }
+  .message p{font-size:15px; color:var(--bone); margin-bottom:14px; max-width:640px;}
+  .message .sign{font-family:var(--font-mono); font-size:13px; color:var(--ash); margin-top:20px;}
+
+  /* ---------- CONTRACT ---------- */
+  .contract-box{
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+    border:1px solid var(--line); border-radius:8px; padding:14px 18px;
+    font-family:var(--font-mono); font-size:13px; color:var(--ash); flex-wrap:wrap;
+  }
+  .contract-box .addr{color:var(--bone); word-break:break-all;}
+  .copy-btn{
+    background:transparent; border:1px solid var(--line); color:var(--bone);
+    font-family:var(--font-mono); font-size:12px; padding:7px 12px; border-radius:6px;
+    cursor:pointer; flex-shrink:0; transition:border-color .2s;
+  }
+  .copy-btn:hover{border-color:var(--signal);}
+
+  /* ---------- FOOTER ---------- */
+  footer{border-top:1px solid var(--line); margin-top:80px; padding:32px 0 48px;}
+  footer .wrap{display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;}
+  .foot-links{display:flex; gap:20px; font-family:var(--font-mono); font-size:13px; color:var(--ash);}
+  .foot-links a{text-decoration:none; transition:color .2s;}
+  .foot-links a:hover{color:var(--bone);}
+  .foot-note{font-size:12px; color:var(--ash); font-family:var(--font-mono);}
+
+  @media (max-width:640px){
+    .proof-grid{grid-template-columns:1fr;}
+    .log-row{grid-template-columns:1fr; gap:4px;}
+    footer .wrap{flex-direction:column; align-items:flex-start;}
+  }
+
+  .reveal{opacity:0; transform:translateY(12px); transition:opacity .6s ease, transform .6s ease;}
+  .reveal.in{opacity:1; transform:translateY(0);}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <div class="brand">
+      <span class="mark">
+        <svg viewBox="0 0 16 16" width="16" height="16"><path d="M1 13 L4 7 L7 10 L15 2" stroke="#0B0E14" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+      $WDC
+    </div>
+    <div class="navlinks">
+      <a href="#proof">Proof</a>
+      <a href="#history">History</a>
+      <a href="#note">Note</a>
+    </div>
+    <a class="buy-btn" href="#" id="buy-link">Buy on pump.fun</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="wrap">
+    <svg class="hero-pulse" viewBox="0 0 900 90" preserveAspectRatio="none">
+      <path d="M0,45 L280,45 L300,45 L315,20 L330,70 L345,45 L360,45 L380,45 L400,45 L420,10 L440,80 L460,45 L480,45 L900,45" class="spike"/>
+    </svg>
+    <div class="eyebrow">Live on Solana</div>
+    <h1>Declared dead in 2018.<br><span class="fade">Still trading in 2026.</span></h1>
+    <p class="hero-sub">$WDC is a 2013 coin nobody expected to come back. This page exists to show exactly where things stand — no roadmap theater, just what's real right now.</p>
+    <div class="hero-cta">
+      <a class="cta-primary" href="#" id="buy-link-2">Buy $WDC</a>
+      <a class="cta-secondary" href="#proof">See the proof</a>
+    </div>
+  </div>
+</section>
+
+<div class="wrap">
+
+  <div class="divider" id="proof">Proof, not promises</div>
+  <div class="proof-grid reveal">
+    <div class="proof-cell">
+      <div class="proof-label">Liquidity</div>
+      <div class="proof-value">$6,000</div>
+    </div>
+    <div class="proof-cell">
+      <div class="proof-label">Market cap</div>
+      <div class="proof-value">$7,000</div>
+    </div>
+    <div class="proof-cell">
+      <div class="proof-label">Status</div>
+      <div class="proof-value status-live">Active</div>
+    </div>
+  </div>
+
+  <div class="divider" id="history">Timeline</div>
+  <div class="log reveal">
+    <div class="log-row">
+      <div class="log-time">2013</div>
+      <div class="log-text">World Coin launches. <span class="muted">Original project, pre-memecoin era.</span></div>
+    </div>
+    <div class="log-row">
+      <div class="log-time">2018</div>
+      <div class="log-text">Project goes dormant. <span class="muted">Effectively dead for years.</span></div>
+    </div>
+    <div class="log-row">
+      <div class="log-time">2025</div>
+      <div class="log-text">Revived on pump.fun. <span class="muted">Community forms around the name-revival angle.</span></div>
+    </div>
+    <div class="log-row current">
+      <div class="log-time">Now</div>
+      <div class="log-text">Rebuilding in the open. <span class="muted">This site, consistent updates, no more silence.</span></div>
+    </div>
+  </div>
+
+  <div class="divider" id="note">A note, not a pitch</div>
+  <div class="message reveal">
+    <p>Some of you left before the price ever moved — and that's fair. Things were said and not followed through on, and I went quiet for stretches when I should've been showing up. That's on me.</p>
+    <p>I'm not here to relaunch with a new promise. This site is meant to be the plainest version of where WDC actually stands — the real liquidity number, the real timeline, updated as things change, not when it's convenient.</p>
+    <p>If you're still around, I'd rather earn it back slowly than oversell it once.</p>
+    <div class="sign">— the dev</div>
+  </div>
+
+  <div class="divider">Contract</div>
+  <div class="contract-box reveal">
+    <span class="addr" id="contract-addr">PASTE_CONTRACT_ADDRESS_HERE</span>
+    <button class="copy-btn" id="copy-btn">Copy</button>
+  </div>
+
+</div>
+
+<footer>
+  <div class="wrap">
+    <div class="brand" style="font-size:15px;">
+      <span class="mark" style="width:20px;height:20px;">
+        <svg viewBox="0 0 16 16" width="12" height="12"><path d="M1 13 L4 7 L7 10 L15 2" stroke="#0B0E14" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+      $WDC
+    </div>
+    <div class="foot-links">
+      <a href="#" id="x-link">X</a>
+      <a href="#" id="community-link">Community</a>
+      <a href="#" id="chart-link">Chart</a>
+    </div>
+    <div class="foot-note">Not financial advice.</div>
+  </div>
+</footer>
+
+<script>
+  document.querySelectorAll('.reveal').forEach(function(el){
+    var obs = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){ entry.target.classList.add('in'); }
+      });
+    }, {threshold:0.15});
+    obs.observe(el);
+  });
+
+  var copyBtn = document.getElementById('copy-btn');
+  copyBtn.addEventListener('click', function(){
+    var text = document.getElementById('contract-addr').textContent;
+    navigator.clipboard.writeText(text).then(function(){
+      copyBtn.textContent = 'Copied';
+      setTimeout(function(){ copyBtn.textContent = 'Copy'; }, 1500);
+    });
+  });
+</script>
+
+</body>
+  </html>
